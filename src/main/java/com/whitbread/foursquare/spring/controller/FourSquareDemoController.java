@@ -28,6 +28,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.whitbread.foursquare.client.FourSquareClient;
+import com.whitbread.foursquare.spring.formbean.FourSquareDemoFormBean;
+
 /**
  * Technical Test for whitbread
  * 
@@ -37,12 +40,33 @@ import org.springframework.web.servlet.ModelAndView;
  *  You are tasked with creating a page or application which allows you to search for a place by 
  *  name and return the recommended or popular venues near that location.
  * 
- *  @author gavin olukoju
+ *  @author Gavin Olukoju
  *  @email gavin.olukoju@inconnect.co.uk
  *
  */
 
 @Controller
 public class FourSquareDemoController {
+	
+//	@Autowired
+//	@Qualifier("fourSquareClient")
+//	private FourSquareClient fourSquareClient;
+	
+	@RequestMapping(value="/location/search", method=RequestMethod.GET)
+    public String customerLogin(ModelMap model) { 
 
+		FourSquareDemoFormBean fourSquareDemoFormBean = new FourSquareDemoFormBean();
+        model.addAttribute("fourSquareDemoFormBean", fourSquareDemoFormBean);
+		
+
+		return "location/search";
+	}
+	
+	/*******************************************************************/
+	/****************** UNCHANGED ACCESSOR METHODS FOLLOW **************/
+	/*******************************************************************/
+	
+//	public void setFourSquareClient(FourSquareClient fourSquareClient) {
+//		this.fourSquareClient = fourSquareClient;
+//	}
 }
