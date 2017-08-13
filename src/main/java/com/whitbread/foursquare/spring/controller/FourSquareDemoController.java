@@ -31,6 +31,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.whitbread.foursquare.client.FourSquareClient;
 import com.whitbread.foursquare.spring.formbean.FourSquareDemoFormBean;
 
+import fi.foyt.foursquare.api.FoursquareApiException;
+import fi.foyt.foursquare.api.Result;
+import fi.foyt.foursquare.api.entities.CompactVenue;
+import fi.foyt.foursquare.api.entities.VenuesSearchResult;
+
 /**
  * Technical Test for whitbread
  * 
@@ -54,9 +59,25 @@ public class FourSquareDemoController {
 	
 	@RequestMapping(value="/location/search", method=RequestMethod.GET)
     public String customerLogin(ModelMap model) { 
+		
+		
+		FourSquareClient fourSquareClient = new FourSquareClient();
+		try {
+			Result<VenuesSearchResult> result = fourSquareClient.searchVenues("Wokingham");
+			
+			for (CompactVenue venue : result.getResult().getVenues()) {
+				// TODO: Do something we the data
+				System.out.println(venue.toString());
+			}
+		} catch (FoursquareApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		FourSquareDemoFormBean fourSquareDemoFormBean = new FourSquareDemoFormBean();
         model.addAttribute("fourSquareDemoFormBean", fourSquareDemoFormBean);
+        
+       
 		
 
 		return "location/search";
