@@ -25,16 +25,15 @@ public class FourSquareClient {
 	    //String near, String query, Integer limit, String intent, String categoryId, String url, String providerId, String linkedId
 	    
 	    // After client has been initialized we can make queries.
-//	    Result<VenuesSearchResult> result = foursquareApi.venuesSearch("Wokingham", query, limit, intent, categoryId, url, providerId, linkedId);
 	    Result<VenuesSearchResult> result = foursquareApi.venuesSearch(near, null, 250, null, null, null, null, null);
 	    
 	    
 	    if (result.getMeta().getCode() == 200) {
 	      // if query was ok we can finally we do something with the data
-	      for (CompactVenue venue : result.getResult().getVenues()) {
-	        // TODO: Do something we the data
-	        System.out.println(venue.getName());
-	      }
+//	      for (CompactVenue venue : result.getResult().getVenues()) {
+//	        // TODO: Do something we the data
+//	        System.out.println(venue.getName());
+//	      }
 	      
 	      return result;
 	    } else {

@@ -73,7 +73,7 @@ public class FourSquareDemoController {
 			
 			for (CompactVenue venue : result.getResult().getVenues()) {
 				// TODO: Do something we the data
-				System.out.println(venue.toString());
+//				System.out.println(venue.toString());
 				
 				MapDataFormBean mapDataFormBean = new MapDataFormBean();
 				mapDataFormBean.setName(venue.getName());
@@ -110,7 +110,7 @@ public class FourSquareDemoController {
 				
 				for (CompactVenue venue : venueSearchResult.getResult().getVenues()) {
 					// TODO: Do something we the data
-					System.out.println(venue.toString());
+//					System.out.println(venue.toString());
 					
 					MapDataFormBean mapDataFormBean = new MapDataFormBean();
 					mapDataFormBean.setName(venue.getName());
