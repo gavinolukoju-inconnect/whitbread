@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.whitbread.foursquare.client.FourSquareClient;
 import com.whitbread.foursquare.spring.formbean.FourSquareDemoFormBean;
+import com.whitbread.foursquare.spring.formbean.MapDataFormBean;
 
 import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
@@ -47,6 +49,9 @@ import fi.foyt.foursquare.api.entities.VenuesSearchResult;
  * 
  *  @author Gavin Olukoju
  *  @email gavin.olukoju@inconnect.co.uk
+ *  
+ *  
+ *  https://developers.google.com/chart/interactive/docs/gallery/map
  *
  */
 
@@ -62,12 +67,20 @@ public class FourSquareDemoController {
 		
 		
 		FourSquareClient fourSquareClient = new FourSquareClient();
+		List<MapDataFormBean> venueList = new ArrayList<MapDataFormBean>();
 		try {
-			Result<VenuesSearchResult> result = fourSquareClient.searchVenues("Wokingham");
+			Result<VenuesSearchResult> result = fourSquareClient.searchVenues("Reading, UK");
 			
 			for (CompactVenue venue : result.getResult().getVenues()) {
 				// TODO: Do something we the data
 				System.out.println(venue.toString());
+				
+				MapDataFormBean mapDataFormBean = new MapDataFormBean();
+				mapDataFormBean.setName(venue.getName());
+				mapDataFormBean.setLatitude(venue.getLocation().getLat().toString());
+				mapDataFormBean.setLongitude(venue.getLocation().getLng().toString());
+				
+				venueList.add(mapDataFormBean);
 			}
 		} catch (FoursquareApiException e) {
 			// TODO Auto-generated catch block
@@ -75,12 +88,53 @@ public class FourSquareDemoController {
 		}
 
 		FourSquareDemoFormBean fourSquareDemoFormBean = new FourSquareDemoFormBean();
+		fourSquareDemoFormBean.setVenueList(venueList);
         model.addAttribute("fourSquareDemoFormBean", fourSquareDemoFormBean);
-        
-       
-		
 
 		return "location/search";
+	}
+	
+	@RequestMapping(value="/location/search", method=RequestMethod.POST)
+    public ModelAndView processForm(@ModelAttribute(value="fourSquareDemoFormBean") FourSquareDemoFormBean formBean,BindingResult result, HttpServletRequest request, 
+            HttpServletResponse response){
+		
+		System.out.println("Inside location/search post");
+		
+		if(!result.hasErrors()){
+			FourSquareClient fourSquareClient = new FourSquareClient();
+			try {
+				Result<VenuesSearchResult> venueSearchResult = fourSquareClient.searchVenues(formBean.getLocationName());
+				
+				List<MapDataFormBean> venueList = new ArrayList<MapDataFormBean>();
+				formBean.getVenueList().clear();
+				
+				for (CompactVenue venue : venueSearchResult.getResult().getVenues()) {
+					// TODO: Do something we the data
+					System.out.println(venue.toString());
+					
+					MapDataFormBean mapDataFormBean = new MapDataFormBean();
+					mapDataFormBean.setName(venue.getName());
+					mapDataFormBean.setLatitude(venue.getLocation().getLat().toString());
+					mapDataFormBean.setLongitude(venue.getLocation().getLng().toString());
+					
+					venueList.add(mapDataFormBean);
+					
+				}
+				
+				formBean.setVenueList(venueList);
+			} catch (FoursquareApiException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullPointerException npes) {
+				// TODO Auto-generated catch block
+				npes.printStackTrace();
+			}
+
+			
+			return new ModelAndView("location/search","fourSquareDemoFormBean",formBean);
+		} else {
+			return new ModelAndView("location/search","fourSquareDemoFormBean",formBean);
+		}
 	}
 	
 	/*******************************************************************/
